@@ -1,0 +1,2959 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FixItHub - Admin Dashboard</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f6f8;
+    color: #1f2937;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+#loginPage {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #e8eef7, #f8fafc);
+}
+
+.login-box {
+    width: 390px;
+    max-width: 92%;
+    background: white;
+    padding: 38px;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.login-logo {
+    text-align: center;
+    font-size: 48px;
+    margin-bottom: 8px;
+}
+
+.login-box h1 {
+    text-align: center;
+    font-size: 27px;
+    margin-bottom: 5px;
+}
+
+.login-box p {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 28px;
+}
+
+.login-box label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 18px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+}
+
+.login-box input:focus {
+    border-color: #2563eb;
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-container input {
+    padding-right: 65px;
+}
+
+.show-password {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    border: none;
+    background: transparent;
+    color: #2563eb;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.login-button {
+    width: 100%;
+    padding: 13px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-button:hover {
+    background: #1d4ed8;
+}
+
+.login-error {
+    display: none;
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 11px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+#dashboardPage {
+    display: none;
+}
+
+.layout {
+    min-height: 100vh;
+    display: flex;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+    width: 245px;
+    background: #111827;
+    color: white;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    padding: 22px 15px;
+    z-index: 100;
+}
+
+.sidebar-logo {
+    padding: 8px 12px 25px;
+    border-bottom: 1px solid #374151;
+    margin-bottom: 20px;
+}
+
+.sidebar-logo h2 {
+    font-size: 22px;
+}
+
+.sidebar-logo p {
+    color: #9ca3af;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.nav-title {
+    color: #6b7280;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 12px;
+}
+
+.nav-item {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: #d1d5db;
+    padding: 13px 12px;
+    margin: 3px 0;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-item:hover {
+    background: #1f2937;
+    color: white;
+}
+
+.nav-item.active {
+    background: #2563eb;
+    color: white;
+}
+
+.nav-count {
+    background: rgba(255,255,255,0.15);
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.sidebar-bottom {
+    position: absolute;
+    bottom: 20px;
+    left: 15px;
+    right: 15px;
+}
+
+.sidebar-logout {
+    width: 100%;
+    padding: 11px;
+    border: none;
+    border-radius: 8px;
+    background: #dc2626;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.sidebar-logout:hover {
+    background: #b91c1c;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main {
+    margin-left: 245px;
+    width: calc(100% - 245px);
+    min-height: 100vh;
+}
+
+.top-header {
+    background: white;
+    padding: 20px 30px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.top-header h1 {
+    font-size: 25px;
+}
+
+.top-header p {
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.refresh-btn {
+    background: #2563eb;
+    color: white;
+    padding: 10px 17px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.refresh-btn:hover {
+    background: #1d4ed8;
+}
+
+.logout-top {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.content {
+    padding: 28px;
+}
+
+/* =========================
+   STATISTICS
+========================= */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 17px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 5px solid;
+}
+
+.stat-card h3 {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 9px;
+}
+
+.number {
+    font-size: 29px;
+    font-weight: bold;
+}
+
+.stat-total {
+    border-color: #2563eb;
+}
+
+.stat-pending {
+    border-color: #f59e0b;
+}
+
+.stat-progress {
+    border-color: #3b82f6;
+}
+
+.stat-resolved {
+    border-color: #16a34a;
+}
+
+.stat-urgent {
+    border-color: #dc2626;
+}
+
+/* =========================
+   EXTRA STATS
+========================= */
+
+.extra-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 17px;
+    margin-bottom: 20px;
+}
+
+.extra-card {
+    background: white;
+    padding: 17px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.extra-card-title {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.extra-card-value {
+    font-size: 21px;
+    font-weight: bold;
+}
+
+/* =========================
+   RESOLUTION BAR
+========================= */
+
+.performance-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.performance-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #16a34a;
+    border-radius: 20px;
+    transition: width 0.4s;
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.toolbar {
+    background: white;
+    padding: 17px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.search-box {
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box input,
+.category-filter {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+}
+
+.category-wrapper {
+    width: 190px;
+}
+
+/* =========================
+   SECTION
+========================= */
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.section-heading h2 {
+    font-size: 19px;
+}
+
+.last-updated {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 2100px;
+}
+
+th {
+    background: #f9fafb;
+    padding: 14px;
+    text-align: left;
+    font-size: 13px;
+    color: #4b5563;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
+
+td {
+    padding: 14px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+    vertical-align: top;
+}
+
+tbody tr:hover {
+    background: #f9fafb;
+}
+
+.urgent-row {
+    background: #fff7f7;
+}
+
+.resolved-row {
+    background: #f7fff9;
+}
+
+.ticket-id {
+    font-weight: bold;
+    color: #2563eb;
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.badge {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.urgent-badge {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.normal-badge {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: 1px solid #d1d5db;
+}
+
+.resolved-badge {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-progress {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-resolved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.urgent-problem {
+    color: #b91c1c;
+    font-weight: bold;
+    max-width: 240px;
+    line-height: 1.5;
+}
+
+/* =========================
+   RESOLUTION INFO
+========================= */
+
+.resolved-time {
+    font-weight: bold;
+    color: #166534;
+    line-height: 1.7;
+    white-space: nowrap;
+}
+
+.resolution-duration {
+    display: inline-block;
+    margin-top: 5px;
+    background: #f0fdf4;
+    color: #166534;
+    padding: 6px 9px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+/* =========================
+   UPDATE
+========================= */
+
+.status-select {
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    min-width: 135px;
+    background: white;
+}
+
+.remarks-input {
+    width: 190px;
+    min-height: 70px;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    resize: vertical;
+}
+
+.update-btn {
+    margin-top: 7px;
+    padding: 8px 12px;
+    background: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.update-btn:hover {
+    background: #15803d;
+}
+
+.update-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.update-message {
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* =========================
+   PHOTO
+========================= */
+
+.photo-btn {
+    background: #111827;
+    color: white;
+    padding: 7px 11px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.photo-btn:hover {
+    background: #374151;
+}
+
+.no-photo {
+    color: #9ca3af;
+}
+
+/* =========================
+   MESSAGES
+========================= */
+
+.message {
+    padding: 35px;
+    text-align: center;
+}
+
+.loading {
+    color: #2563eb;
+}
+
+.error {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+.empty-state {
+    padding: 45px;
+    text-align: center;
+    color: #6b7280;
+}
+
+.empty-state .emoji {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 1250px) {
+
+    .stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+@media (max-width: 900px) {
+
+    .sidebar {
+        width: 70px;
+        padding: 15px 8px;
+    }
+
+    .sidebar-logo h2 {
+        font-size: 0;
+        text-align: center;
+    }
+
+    .sidebar-logo h2::after {
+        content: "🏢";
+        font-size: 24px;
+    }
+
+    .sidebar-logo p,
+    .nav-title,
+    .nav-item span:not(.nav-count),
+    .sidebar-logout {
+        display: none;
+    }
+
+    .nav-item {
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .nav-count {
+        display: none;
+    }
+
+    .main {
+        margin-left: 70px;
+        width: calc(100% - 70px);
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .extra-stats {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .top-header {
+        padding: 17px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .content {
+        padding: 17px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .refresh-btn,
+    .logout-top {
+        flex: 1;
+    }
+
+    .category-wrapper {
+        width: 100%;
+    }
+
+    .search-box {
+        min-width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     LOGIN
+===================================================== -->
+
+<div id="loginPage">
+
+    <div class="login-box">
+
+        <div class="login-logo">🏢</div>
+
+        <h1>FixItHub</h1>
+
+        <p>Administrator Login</p>
+
+        <div id="loginError" class="login-error">
+            Invalid username or password.
+        </div>
+
+        <form onsubmit="loginAdmin(event)">
+
+            <label>Username</label>
+
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter admin username"
+                autocomplete="username"
+                required
+            >
+
+            <label>Password</label>
+
+            <div class="password-container">
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter admin password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="show-password"
+                    onclick="togglePassword()"
+                >
+                    Show
+                </button>
+
+            </div>
+
+            <button
+                type="submit"
+                class="login-button"
+            >
+                🔐 Login
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<div id="dashboardPage">
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+
+                <h2>🏢 FixItHub</h2>
+
+                <p>Maintenance Management</p>
+
+            </div>
+
+            <div class="nav-title">
+                Active Complaints
+            </div>
+
+            <button
+                class="nav-item active"
+                onclick="setSection('active', this)"
+            >
+                <span>📋 Active Complaints</span>
+                <span class="nav-count" id="navActive">0</span>
+            </button>
+
+            <button
+                class="nav-item"
+                onclick="setSection('urgent', this)"
+            >
+                <span>🚨 Urgent</span>
+                <span class="nav-count" id="navUrgent">0</span>
+            </button>
+
+            <button
+                class="nav-item"
+                onclick="setSection('Pending', this)"
+            >
+                <span>⏳ Pending</span>
+                <span class="nav-count" id="navPending">0</span>
+            </button>
+
+            <button
+                class="nav-item"
+                onclick="setSection('In Progress', this)"
+            >
+                <span>🔄 In Progress</span>
+                <span class="nav-count" id="navProgress">0</span>
+            </button>
+
+            <div class="nav-title">
+                History
+            </div>
+
+            <button
+                class="nav-item"
+                onclick="setSection('Resolved', this)"
+            >
+                <span>✅ Resolved</span>
+                <span class="nav-count" id="navResolved">0</span>
+            </button>
+
+            <div class="sidebar-bottom">
+
+                <button
+                    class="sidebar-logout"
+                    onclick="logoutAdmin()"
+                >
+                    🚪 Logout
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+
+        <main class="main">
+
+            <header class="top-header">
+
+                <div>
+
+                    <h1>📊 Admin Dashboard</h1>
+
+                    <p>
+                        Monitor and manage apartment maintenance requests
+                    </p>
+
+                </div>
+
+                <div class="header-actions">
+
+                    <button
+                        class="refresh-btn"
+                        onclick="loadTickets()"
+                    >
+                        🔄 Refresh
+                    </button>
+
+                    <button
+                        class="logout-top"
+                        onclick="logoutAdmin()"
+                    >
+                        🚪 Logout
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <div class="content">
+
+                <!-- MAIN STATISTICS -->
+
+                <div class="stats">
+
+                    <div class="stat-card stat-total">
+                        <h3>Total Complaints</h3>
+                        <div class="number" id="totalCount">0</div>
+                    </div>
+
+                    <div class="stat-card stat-pending">
+                        <h3>⏳ Pending</h3>
+                        <div class="number" id="pendingCount">0</div>
+                    </div>
+
+                    <div class="stat-card stat-progress">
+                        <h3>🔄 In Progress</h3>
+                        <div class="number" id="progressCount">0</div>
+                    </div>
+
+                    <div class="stat-card stat-resolved">
+                        <h3>✅ Resolved</h3>
+                        <div class="number" id="resolvedCount">0</div>
+                    </div>
+
+                    <div class="stat-card stat-urgent">
+                        <h3>🚨 Urgent</h3>
+                        <div class="number" id="urgentCount">0</div>
+                    </div>
+
+                </div>
+
+
+                <!-- EXTRA STATISTICS -->
+
+                <div class="extra-stats">
+
+                    <div class="extra-card">
+
+                        <div class="extra-card-title">
+                            📅 Resolved Today
+                        </div>
+
+                        <div
+                            class="extra-card-value"
+                            id="resolvedToday"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+                    <div class="extra-card">
+
+                        <div class="extra-card-title">
+                            ⏱ Average Resolution Time
+                        </div>
+
+                        <div
+                            class="extra-card-value"
+                            id="averageResolution"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+                    <div class="extra-card">
+
+                        <div class="extra-card-title">
+                            📋 Active Complaints
+                        </div>
+
+                        <div
+                            class="extra-card-value"
+                            id="activeCount"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESOLUTION PROGRESS -->
+
+                <div class="performance-card">
+
+                    <div class="performance-header">
+
+                        <strong>
+                            📈 Resolution Rate
+                        </strong>
+
+                        <strong id="resolutionPercentage">
+                            0%
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-bar">
+
+                        <div
+                            id="resolutionBar"
+                            class="progress-fill"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <div class="toolbar">
+
+                    <div class="search-box">
+
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="🔎 Search Ticket ID, resident, location, problem..."
+                            oninput="applyFilters()"
+                        >
+
+                    </div>
+
+                    <div class="category-wrapper">
+
+                        <select
+                            id="categoryFilter"
+                            class="category-filter"
+                            onchange="applyFilters()"
+                        >
+
+                            <option value="all">
+                                All Categories
+                            </option>
+
+                            <option value="Plumbing">
+                                Plumbing
+                            </option>
+
+                            <option value="Electrical">
+                                Electrical
+                            </option>
+
+                            <option value="Cleaning">
+                                Cleaning
+                            </option>
+
+                            <option value="Elevator">
+                                Elevator
+                            </option>
+
+                            <option value="AC">
+                                AC
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SECTION -->
+
+                <div class="section-heading">
+
+                    <h2 id="sectionTitle">
+                        📋 Active Complaints
+                    </h2>
+
+                    <div
+                        class="last-updated"
+                        id="lastUpdated"
+                    >
+                        Last updated: -
+                    </div>
+
+                </div>
+
+
+                <!-- TABLE -->
+
+                <div class="table-container">
+
+                    <div
+                        id="message"
+                        class="message loading"
+                    >
+                        Loading complaints...
+                    </div>
+
+                    <div
+                        id="emptyState"
+                        class="empty-state"
+                        style="display:none;"
+                    >
+
+                        <div class="emoji">📭</div>
+
+                        <strong>
+                            No complaints found
+                        </strong>
+
+                        <p>
+                            There are no complaints in this section.
+                        </p>
+
+                    </div>
+
+                    <table
+                        id="ticketsTable"
+                        style="display:none;"
+                    >
+
+                        <thead id="tableHead"></thead>
+
+                        <tbody id="ticketsBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   LOGIN DETAILS
+===================================================== */
+
+const ADMIN_USERNAME = "admin";
+
+const ADMIN_PASSWORD = "FixItHub@2026";
+
+
+/* =====================================================
+   API
+===================================================== */
+
+const API_URL =
+    "https://gsav1ujxyf.execute-api.ap-south-1.amazonaws.com";
+
+
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+let allTickets = [];
+
+let currentSection = "active";
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function loginAdmin(event) {
+
+    event.preventDefault();
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const error =
+        document.getElementById("loginError");
+
+    if (
+        username === ADMIN_USERNAME &&
+        password === ADMIN_PASSWORD
+    ) {
+
+        sessionStorage.setItem(
+            "fixithubAdminLoggedIn",
+            "true"
+        );
+
+        error.style.display = "none";
+
+        showDashboard();
+
+    } else {
+
+        error.style.display = "block";
+
+    }
+
+}
+
+
+/* =====================================================
+   PASSWORD
+===================================================== */
+
+function togglePassword() {
+
+    const password =
+        document.getElementById("password");
+
+    const button =
+        document.querySelector(".show-password");
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+        button.textContent = "Hide";
+
+    } else {
+
+        password.type = "password";
+
+        button.textContent = "Show";
+
+    }
+
+}
+
+
+/* =====================================================
+   SHOW DASHBOARD
+===================================================== */
+
+function showDashboard() {
+
+    document.getElementById("loginPage").style.display = "none";
+
+    document.getElementById("dashboardPage").style.display = "block";
+
+    loadTickets();
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logoutAdmin() {
+
+    sessionStorage.removeItem(
+        "fixithubAdminLoggedIn"
+    );
+
+    document.getElementById("dashboardPage").style.display = "none";
+
+    document.getElementById("loginPage").style.display = "flex";
+
+    document.getElementById("username").value = "";
+
+    document.getElementById("password").value = "";
+
+}
+
+
+/* =====================================================
+   CHECK LOGIN
+===================================================== */
+
+function checkLogin() {
+
+    const loggedIn =
+        sessionStorage.getItem(
+            "fixithubAdminLoggedIn"
+        );
+
+    if (loggedIn === "true") {
+
+        showDashboard();
+
+    } else {
+
+        document.getElementById("loginPage").style.display = "flex";
+
+        document.getElementById("dashboardPage").style.display = "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD TICKETS
+===================================================== */
+
+async function loadTickets() {
+
+    const message =
+        document.getElementById("message");
+
+    const table =
+        document.getElementById("ticketsTable");
+
+    const emptyState =
+        document.getElementById("emptyState");
+
+    message.style.display = "block";
+
+    message.className = "message loading";
+
+    message.textContent = "Loading complaints...";
+
+    table.style.display = "none";
+
+    emptyState.style.display = "none";
+
+    try {
+
+        const response =
+            await fetch(`${API_URL}/tickets`);
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        console.log("Tickets:", data);
+
+        allTickets =
+            Array.isArray(data.tickets)
+                ? data.tickets
+                : [];
+
+        updateStatistics();
+
+        document.getElementById(
+            "lastUpdated"
+        ).textContent =
+            `Last updated: ${new Date().toLocaleString("en-IN")}`;
+
+        applyFilters();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Dashboard error:",
+            error
+        );
+
+        message.className = "message error";
+
+        message.textContent =
+            "Unable to load complaints. " +
+            error.message;
+
+    }
+
+}
+
+
+/* =====================================================
+   UPDATE STATISTICS
+===================================================== */
+
+function updateStatistics() {
+
+    const total =
+        allTickets.length;
+
+    const pending =
+        allTickets.filter(
+            t => (t.status || "Pending") === "Pending"
+        ).length;
+
+    const inProgress =
+        allTickets.filter(
+            t => t.status === "In Progress"
+        ).length;
+
+    const resolved =
+        allTickets.filter(
+            t => t.status === "Resolved"
+        ).length;
+
+    const urgent =
+        allTickets.filter(
+            isTicketUrgent
+        ).length;
+
+    const active =
+        total - resolved;
+
+
+    document.getElementById("totalCount").textContent =
+        total;
+
+    document.getElementById("pendingCount").textContent =
+        pending;
+
+    document.getElementById("progressCount").textContent =
+        inProgress;
+
+    document.getElementById("resolvedCount").textContent =
+        resolved;
+
+    document.getElementById("urgentCount").textContent =
+        urgent;
+
+    document.getElementById("activeCount").textContent =
+        active;
+
+
+    document.getElementById("navActive").textContent =
+        active;
+
+    document.getElementById("navUrgent").textContent =
+        urgent;
+
+    document.getElementById("navPending").textContent =
+        pending;
+
+    document.getElementById("navProgress").textContent =
+        inProgress;
+
+    document.getElementById("navResolved").textContent =
+        resolved;
+
+
+    const percentage =
+        total > 0
+            ? Math.round((resolved / total) * 100)
+            : 0;
+
+
+    document.getElementById(
+        "resolutionPercentage"
+    ).textContent =
+        `${percentage}%`;
+
+
+    document.getElementById(
+        "resolutionBar"
+    ).style.width =
+        `${percentage}%`;
+
+
+    /* =========================
+       RESOLVED TODAY
+    ========================= */
+
+    const today =
+        getLocalDateString(new Date());
+
+    const resolvedToday =
+        allTickets.filter(ticket => {
+
+            if (
+                ticket.status !== "Resolved" ||
+                !ticket.resolvedAt
+            ) {
+                return false;
+            }
+
+            const resolvedDate =
+                getLocalDateString(
+                    new Date(ticket.resolvedAt)
+                );
+
+            return resolvedDate === today;
+
+        }).length;
+
+
+    document.getElementById(
+        "resolvedToday"
+    ).textContent =
+        resolvedToday;
+
+
+    /* =========================
+       AVERAGE RESOLUTION
+    ========================= */
+
+    const durations =
+        allTickets
+            .filter(
+                ticket =>
+                    ticket.status === "Resolved" &&
+                    ticket.resolvedAt
+            )
+            .map(
+                getResolutionDurationMs
+            )
+            .filter(
+                value =>
+                    value !== null &&
+                    value >= 0
+            );
+
+
+    if (durations.length > 0) {
+
+        const average =
+            durations.reduce(
+                (sum, value) =>
+                    sum + value,
+                0
+            ) / durations.length;
+
+
+        document.getElementById(
+            "averageResolution"
+        ).textContent =
+            formatDuration(average);
+
+    } else {
+
+        document.getElementById(
+            "averageResolution"
+        ).textContent =
+            "-";
+
+    }
+
+}
+
+
+/* =====================================================
+   URGENT
+===================================================== */
+
+function isTicketUrgent(ticket) {
+
+    return (
+        ticket.urgent === true ||
+        ticket.urgent === "true"
+    );
+
+}
+
+
+/* =====================================================
+   SECTION
+===================================================== */
+
+function setSection(section, button) {
+
+    currentSection = section;
+
+    document
+        .querySelectorAll(".nav-item")
+        .forEach(item => {
+
+            item.classList.remove("active");
+
+        });
+
+
+    if (button) {
+
+        button.classList.add("active");
+
+    }
+
+
+    const title =
+        document.getElementById("sectionTitle");
+
+
+    if (section === "active") {
+
+        title.textContent =
+            "📋 Active Complaints";
+
+    }
+
+    else if (section === "urgent") {
+
+        title.textContent =
+            "🚨 Urgent Complaints";
+
+    }
+
+    else if (section === "Pending") {
+
+        title.textContent =
+            "⏳ Pending Complaints";
+
+    }
+
+    else if (section === "In Progress") {
+
+        title.textContent =
+            "🔄 In Progress Complaints";
+
+    }
+
+    else if (section === "Resolved") {
+
+        title.textContent =
+            "✅ Resolved Complaints";
+
+    }
+
+
+    applyFilters();
+
+}
+
+
+/* =====================================================
+   FILTERS
+===================================================== */
+
+function applyFilters() {
+
+    const search =
+        document
+            .getElementById("searchInput")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const category =
+        document.getElementById(
+            "categoryFilter"
+        ).value;
+
+
+    let filtered =
+        [...allTickets];
+
+
+    /* SECTION */
+
+    if (currentSection === "active") {
+
+        filtered =
+            filtered.filter(
+                ticket =>
+                    (ticket.status || "Pending") !==
+                    "Resolved"
+            );
+
+    }
+
+    else if (currentSection === "urgent") {
+
+        filtered =
+            filtered.filter(
+                ticket =>
+                    isTicketUrgent(ticket) &&
+                    (ticket.status || "Pending") !==
+                    "Resolved"
+            );
+
+    }
+
+    else if (currentSection === "Pending") {
+
+        filtered =
+            filtered.filter(
+                ticket =>
+                    (ticket.status || "Pending") ===
+                    "Pending"
+            );
+
+    }
+
+    else if (currentSection === "In Progress") {
+
+        filtered =
+            filtered.filter(
+                ticket =>
+                    ticket.status ===
+                    "In Progress"
+            );
+
+    }
+
+    else if (currentSection === "Resolved") {
+
+        filtered =
+            filtered.filter(
+                ticket =>
+                    ticket.status ===
+                    "Resolved"
+            );
+
+
+        /* NEWEST RESOLVED FIRST */
+
+        filtered.sort(
+            (a, b) => {
+
+                const dateA =
+                    a.resolvedAt
+                        ? new Date(
+                            a.resolvedAt
+                        ).getTime()
+                        : 0;
+
+                const dateB =
+                    b.resolvedAt
+                        ? new Date(
+                            b.resolvedAt
+                        ).getTime()
+                        : 0;
+
+                return dateB - dateA;
+
+            }
+        );
+
+    }
+
+
+    /* CATEGORY */
+
+    if (category !== "all") {
+
+        filtered =
+            filtered.filter(
+                ticket =>
+                    ticket.category === category
+            );
+
+    }
+
+
+    /* SEARCH */
+
+    if (search) {
+
+        filtered =
+            filtered.filter(ticket => {
+
+                const text = [
+
+                    ticket.ticketId,
+                    ticket.residentName,
+                    ticket.location,
+                    ticket.category,
+                    ticket.description,
+                    ticket.urgentProblem,
+                    ticket.status,
+                    ticket.remarks
+
+                ]
+                .join(" ")
+                .toLowerCase();
+
+
+                return text.includes(search);
+
+            });
+
+    }
+
+
+    renderTickets(filtered);
+
+}
+
+
+/* =====================================================
+   NORMAL TABLE HEADER
+===================================================== */
+
+function createTableHeader() {
+
+    return `
+
+        <tr>
+
+            <th>Ticket ID</th>
+
+            <th>Priority</th>
+
+            <th>Resident</th>
+
+            <th>Category</th>
+
+            <th>Location</th>
+
+            <th>Description</th>
+
+            <th>Booking</th>
+
+            <th>Home Time</th>
+
+            <th>Status</th>
+
+            <th>Admin Remarks</th>
+
+            <th>Photo</th>
+
+        </tr>
+
+    `;
+
+}
+
+
+/* =====================================================
+   RESOLVED TABLE HEADER
+===================================================== */
+
+function createResolvedTableHeader() {
+
+    return `
+
+        <tr>
+
+            <th>Ticket ID</th>
+
+            <th>Resident</th>
+
+            <th>Category</th>
+
+            <th>Location</th>
+
+            <th>Description</th>
+
+            <th>Resolved Date & Time</th>
+
+            <th>Resolution Time</th>
+
+            <th>Admin Remarks</th>
+
+            <th>Photo</th>
+
+        </tr>
+
+    `;
+
+}
+
+
+/* =====================================================
+   RENDER TICKETS
+===================================================== */
+
+function renderTickets(tickets) {
+
+    const message =
+        document.getElementById("message");
+
+    const table =
+        document.getElementById("ticketsTable");
+
+    const tbody =
+        document.getElementById("ticketsBody");
+
+    const emptyState =
+        document.getElementById("emptyState");
+
+    const tableHead =
+        document.getElementById("tableHead");
+
+
+    tbody.innerHTML = "";
+
+    message.style.display = "none";
+
+
+    if (tickets.length === 0) {
+
+        table.style.display = "none";
+
+        emptyState.style.display = "block";
+
+        return;
+
+    }
+
+
+    emptyState.style.display = "none";
+
+    table.style.display = "table";
+
+
+    if (currentSection === "Resolved") {
+
+        tableHead.innerHTML =
+            createResolvedTableHeader();
+
+        tickets.forEach(
+            renderResolvedRow
+        );
+
+        return;
+
+    }
+
+
+    tableHead.innerHTML =
+        createTableHeader();
+
+
+    tickets.forEach(
+        renderActiveRow
+    );
+
+}
+
+
+/* =====================================================
+   ACTIVE ROW
+===================================================== */
+
+function renderActiveRow(ticket) {
+
+    const tbody =
+        document.getElementById("ticketsBody");
+
+
+    const row =
+        document.createElement("tr");
+
+
+    const ticketId =
+        ticket.ticketId || "-";
+
+    const resident =
+        ticket.residentName || "-";
+
+    let category =
+        ticket.category || "-";
+
+
+    if (
+        category === "Other" &&
+        ticket.otherProblem
+    ) {
+
+        category =
+            `Other - ${ticket.otherProblem}`;
+
+    }
+
+
+    const location =
+        ticket.location || "-";
+
+    const description =
+        ticket.description || "-";
+
+
+    const booking =
+        `${ticket.bookingDate || ""} ${ticket.bookingTime || ""}`
+            .trim() || "-";
+
+
+    const homeTime =
+        ticket.homeTime || "-";
+
+
+    const currentStatus =
+        ticket.status || "Pending";
+
+
+    const currentRemarks =
+        ticket.remarks || "";
+
+
+    const urgent =
+        isTicketUrgent(ticket);
+
+
+    const urgentProblem =
+        ticket.urgentProblem || "";
+
+
+    const priorityHTML =
+        urgent
+
+            ? `
+                <span class="badge urgent-badge">
+                    🚨 URGENT
+                </span>
+
+                ${
+                    urgentProblem
+                        ? `
+                            <div class="urgent-problem">
+                                ${escapeHTML(urgentProblem)}
+                            </div>
+                          `
+                        : ""
+                }
+              `
+
+            : `
+                <span class="badge normal-badge">
+                    Normal
+                </span>
+              `;
+
+
+    let statusClass =
+        "status-pending";
+
+
+    if (
+        currentStatus ===
+        "In Progress"
+    ) {
+
+        statusClass =
+            "status-progress";
+
+    }
+
+
+    let photoHTML =
+        `<span class="no-photo">No photo</span>`;
+
+
+    if (ticket.photoUrl) {
+
+        photoHTML =
+            `
+            <a
+                class="photo-btn"
+                href="${escapeAttribute(ticket.photoUrl)}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                📷 View
+            </a>
+            `;
+
+    }
+
+
+    row.className =
+        urgent
+            ? "urgent-row"
+            : "";
+
+
+    row.innerHTML = `
+
+        <td>
+            <span class="ticket-id">
+                ${escapeHTML(ticketId)}
+            </span>
+        </td>
+
+
+        <td>
+            ${priorityHTML}
+        </td>
+
+
+        <td>
+            <strong>
+                ${escapeHTML(resident)}
+            </strong>
+        </td>
+
+
+        <td>
+            ${escapeHTML(category)}
+        </td>
+
+
+        <td>
+            ${escapeHTML(location)}
+        </td>
+
+
+        <td>
+            ${escapeHTML(description)}
+        </td>
+
+
+        <td>
+            ${escapeHTML(booking)}
+        </td>
+
+
+        <td>
+            ${escapeHTML(homeTime)}
+        </td>
+
+
+        <td>
+
+            <div style="margin-bottom:7px;">
+
+                <span class="status-badge ${statusClass}">
+                    ${escapeHTML(currentStatus)}
+                </span>
+
+            </div>
+
+
+            <select
+                class="status-select"
+                id="status-${escapeAttribute(ticketId)}"
+            >
+
+                <option
+                    value="Pending"
+                    ${currentStatus === "Pending" ? "selected" : ""}
+                >
+                    Pending
+                </option>
+
+                <option
+                    value="In Progress"
+                    ${currentStatus === "In Progress" ? "selected" : ""}
+                >
+                    In Progress
+                </option>
+
+                <option
+                    value="Resolved"
+                    ${currentStatus === "Resolved" ? "selected" : ""}
+                >
+                    Resolved
+                </option>
+
+            </select>
+
+        </td>
+
+
+        <td>
+
+            <textarea
+                class="remarks-input"
+                id="remarks-${escapeAttribute(ticketId)}"
+                placeholder="Enter admin remarks..."
+            >${escapeHTML(currentRemarks)}</textarea>
+
+
+            <br>
+
+
+            <button
+                class="update-btn"
+                onclick="updateTicket('${escapeJS(ticketId)}')"
+            >
+                💾 Update
+            </button>
+
+
+            <div
+                id="update-${escapeAttribute(ticketId)}"
+                class="update-message"
+            ></div>
+
+        </td>
+
+
+        <td>
+            ${photoHTML}
+        </td>
+
+    `;
+
+
+    tbody.appendChild(row);
+
+}
+
+
+/* =====================================================
+   RESOLVED ROW
+===================================================== */
+
+function renderResolvedRow(ticket) {
+
+    const tbody =
+        document.getElementById("ticketsBody");
+
+
+    const row =
+        document.createElement("tr");
+
+
+    row.className =
+        "resolved-row";
+
+
+    const ticketId =
+        ticket.ticketId || "-";
+
+
+    const resident =
+        ticket.residentName || "-";
+
+
+    let category =
+        ticket.category || "-";
+
+
+    if (
+        category === "Other" &&
+        ticket.otherProblem
+    ) {
+
+        category =
+            `Other - ${ticket.otherProblem}`;
+
+    }
+
+
+    const location =
+        ticket.location || "-";
+
+
+    const description =
+        ticket.description || "-";
+
+
+    const remarks =
+        ticket.remarks || "-";
+
+
+    const resolvedHTML =
+        formatResolvedDateTime(
+            ticket.resolvedAt
+        );
+
+
+    const durationMs =
+        getResolutionDurationMs(
+            ticket
+        );
+
+
+    const durationHTML =
+        durationMs !== null
+
+            ? `
+                <span class="resolution-duration">
+                    ⏱ ${formatDuration(durationMs)}
+                </span>
+              `
+
+            : `
+                <span style="color:#9ca3af;">
+                    Not available
+                </span>
+              `;
+
+
+    let photoHTML =
+        `<span class="no-photo">No photo</span>`;
+
+
+    if (ticket.photoUrl) {
+
+        photoHTML =
+            `
+            <a
+                class="photo-btn"
+                href="${escapeAttribute(ticket.photoUrl)}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                📷 View
+            </a>
+            `;
+
+    }
+
+
+    row.innerHTML = `
+
+        <td>
+
+            <span class="ticket-id">
+                ${escapeHTML(ticketId)}
+            </span>
+
+            <br>
+
+            <span class="badge resolved-badge">
+                ✅ RESOLVED
+            </span>
+
+        </td>
+
+
+        <td>
+            <strong>
+                ${escapeHTML(resident)}
+            </strong>
+        </td>
+
+
+        <td>
+            ${escapeHTML(category)}
+        </td>
+
+
+        <td>
+            ${escapeHTML(location)}
+        </td>
+
+
+        <td>
+            ${escapeHTML(description)}
+        </td>
+
+
+        <td>
+
+            <div class="resolved-time">
+
+                ${resolvedHTML}
+
+            </div>
+
+        </td>
+
+
+        <td>
+
+            ${durationHTML}
+
+        </td>
+
+
+        <td>
+
+            ${escapeHTML(remarks)}
+
+        </td>
+
+
+        <td>
+
+            ${photoHTML}
+
+        </td>
+
+    `;
+
+
+    tbody.appendChild(row);
+
+}
+
+
+/* =====================================================
+   UPDATE TICKET
+===================================================== */
+
+async function updateTicket(ticketId) {
+
+    const statusElement =
+        document.getElementById(
+            `status-${ticketId}`
+        );
+
+
+    const remarksElement =
+        document.getElementById(
+            `remarks-${ticketId}`
+        );
+
+
+    const messageElement =
+        document.getElementById(
+            `update-${ticketId}`
+        );
+
+
+    if (!statusElement) {
+
+        alert("Status field not found.");
+
+        return;
+
+    }
+
+
+    const status =
+        statusElement.value;
+
+
+    const remarks =
+        remarksElement.value.trim();
+
+
+    const button =
+        statusElement
+            .closest("td")
+            .nextElementSibling
+            .querySelector(".update-btn");
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "Updating...";
+
+
+    messageElement.textContent = "";
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/tickets/${encodeURIComponent(ticketId)}`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        status: status,
+
+                        remarks: remarks
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                `HTTP ${response.status}`
+            );
+
+        }
+
+
+        messageElement.style.color =
+            "#16a34a";
+
+
+        messageElement.textContent =
+            "✓ Updated successfully";
+
+
+        /*
+         * Lambda automatically saves:
+         *
+         * inProgressAt
+         *
+         * when status becomes In Progress
+         *
+         * resolvedAt
+         *
+         * when status becomes Resolved
+         */
+
+        await loadTickets();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Update error:",
+            error
+        );
+
+
+        messageElement.style.color =
+            "#dc2626";
+
+
+        messageElement.textContent =
+            "Update failed: " +
+            error.message;
+
+
+        button.disabled = false;
+
+        button.textContent =
+            "💾 Update";
+
+    }
+
+}
+
+
+/* =====================================================
+   RESOLUTION DURATION
+===================================================== */
+
+function getResolutionDurationMs(ticket) {
+
+    if (
+        !ticket ||
+        !ticket.resolvedAt
+    ) {
+
+        return null;
+
+    }
+
+
+    const resolved =
+        new Date(
+            ticket.resolvedAt
+        );
+
+
+    if (
+        isNaN(
+            resolved.getTime()
+        )
+    ) {
+
+        return null;
+
+    }
+
+
+    /*
+     * First preference:
+     * ticket creation time.
+     */
+
+    if (ticket.createdAt) {
+
+        const created =
+            new Date(
+                ticket.createdAt
+            );
+
+
+        if (
+            !isNaN(
+                created.getTime()
+            )
+        ) {
+
+            return (
+                resolved.getTime() -
+                created.getTime()
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Fallback:
+     * booking date + time.
+     */
+
+    if (
+        ticket.bookingDate &&
+        ticket.bookingTime
+    ) {
+
+        const booking =
+            new Date(
+                `${ticket.bookingDate}T${ticket.bookingTime}`
+            );
+
+
+        if (
+            !isNaN(
+                booking.getTime()
+            )
+        ) {
+
+            return (
+                resolved.getTime() -
+                booking.getTime()
+            );
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =====================================================
+   FORMAT DURATION
+===================================================== */
+
+function formatDuration(milliseconds) {
+
+    if (
+        milliseconds === null ||
+        milliseconds < 0
+    ) {
+
+        return "-";
+
+    }
+
+
+    let totalMinutes =
+        Math.floor(
+            milliseconds / 60000
+        );
+
+
+    const days =
+        Math.floor(
+            totalMinutes / 1440
+        );
+
+
+    totalMinutes =
+        totalMinutes % 1440;
+
+
+    const hours =
+        Math.floor(
+            totalMinutes / 60
+        );
+
+
+    const minutes =
+        totalMinutes % 60;
+
+
+    const parts = [];
+
+
+    if (days > 0) {
+
+        parts.push(
+            `${days}d`
+        );
+
+    }
+
+
+    if (hours > 0) {
+
+        parts.push(
+            `${hours}h`
+        );
+
+    }
+
+
+    if (
+        minutes > 0 ||
+        parts.length === 0
+    ) {
+
+        parts.push(
+            `${minutes}m`
+        );
+
+    }
+
+
+    return parts.join(" ");
+
+}
+
+
+/* =====================================================
+   FORMAT RESOLVED DATE/TIME
+===================================================== */
+
+function formatResolvedDateTime(value) {
+
+    if (!value) {
+
+        return `
+            <span style="color:#9ca3af;">
+                Not recorded
+            </span>
+        `;
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return `
+            <span style="color:#dc2626;">
+                Invalid date
+            </span>
+        `;
+
+    }
+
+
+    const dateText =
+        date.toLocaleDateString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        );
+
+
+    const timeText =
+        date.toLocaleTimeString(
+            "en-IN",
+            {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true
+            }
+        );
+
+
+    return `
+
+        <strong>
+            📅 ${dateText}
+        </strong>
+
+        <br>
+
+        <span>
+            🕐 ${timeText}
+        </span>
+
+    `;
+
+}
+
+
+/* =====================================================
+   LOCAL DATE
+===================================================== */
+
+function getLocalDateString(date) {
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/* =====================================================
+   HTML ESCAPE
+===================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   ATTRIBUTE ESCAPE
+===================================================== */
+
+function escapeAttribute(value) {
+
+    return escapeHTML(value);
+
+}
+
+
+/* =====================================================
+   JAVASCRIPT ESCAPE
+===================================================== */
+
+function escapeJS(value) {
+
+    return String(value)
+
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+
+        .replace(
+            /'/g,
+            "\\'"
+        )
+
+        .replace(
+            /"/g,
+            '\\"'
+        );
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+checkLogin();
+
+</script>
+
+</body>
+</html>

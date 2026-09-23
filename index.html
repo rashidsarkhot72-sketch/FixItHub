@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FixItHub - Maintenance Request</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        header {
+            background: #1f4e78;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 6px 0 0;
+            font-size: 15px;
+        }
+
+        .admin-access {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        .admin-access a {
+            display: inline-block;
+            background: white;
+            color: #1f4e78;
+            padding: 10px 15px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .admin-access a:hover {
+            background: #eaf2f8;
+            transform: translateY(-1px);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #1f4e78;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+            margin-bottom: 18px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #1f4e78;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #1f4e78;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #163a5b;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 7px;
+            display: none;
+        }
+
+        .success {
+            background: #dff5e1;
+            color: #176b24;
+        }
+
+        .error {
+            background: #ffe0e0;
+            color: #a00000;
+        }
+
+        /* URGENT */
+
+        .urgent-box {
+            border: 2px solid #ff5252;
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .urgent-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+
+        .urgent-check input {
+            width: auto;
+            margin: 0;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .urgent-title {
+            color: #d00000;
+            font-weight: bold;
+        }
+
+        .urgent-info {
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        #urgentProblemBox {
+            display: none;
+            margin-top: 15px;
+        }
+
+        #urgentProblemBox label {
+            color: #d00000;
+        }
+
+        /* TRACKING */
+
+        .tracking-card {
+            display: none;
+        }
+
+        .ticket-row {
+            display: flex;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .ticket-label {
+            font-weight: bold;
+            min-width: 150px;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .priority-urgent {
+            color: #d00000;
+            font-weight: bold;
+        }
+
+        .priority-normal {
+            color: #176b24;
+            font-weight: bold;
+        }
+
+        .photo-link {
+            color: #1f4e78;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .photo-link:hover {
+            text-decoration: underline;
+        }
+
+        .track-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 7px;
+            background: #555;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .track-btn:hover {
+            background: #333;
+        }
+
+        .loading {
+            color: #555;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+
+            header {
+                padding-top: 70px;
+            }
+
+            .admin-access {
+                top: 15px;
+                right: 15px;
+            }
+
+            .admin-access a {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .ticket-row {
+                flex-direction: column;
+                gap: 3px;
+            }
+
+            .ticket-label {
+                min-width: auto;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1>🏢 FixItHub</h1>
+
+        <p>
+            Apartment Maintenance Request System
+        </p>
+
+        <div class="admin-access">
+            <a href="admin.html">
+                🔐 Admin Access
+            </a>
+        </div>
+
+    </header>
+
+
+    <div class="container">
+
+        <!-- CREATE COMPLAINT -->
+
+        <div class="card">
+
+            <h2>🛠️ Create Maintenance Request</h2>
+
+            <form id="complaintForm">
+
+                <!-- Resident Name -->
+
+                <label for="residentName">
+                    Resident Name
+                </label>
+
+                <input
+                    type="text"
+                    id="residentName"
+                    placeholder="Enter your name"
+                    required
+                >
+
+
+                <!-- Category -->
+
+                <label for="category">
+                    Maintenance Category
+                </label>
+
+                <select id="category" required>
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    <option value="Plumbing">
+                        Plumbing
+                    </option>
+
+                    <option value="Electrical">
+                        Electrical
+                    </option>
+
+                    <option value="Cleaning">
+                        Cleaning
+                    </option>
+
+                    <option value="Elevator">
+                        Elevator
+                    </option>
+
+                    <option value="AC">
+                        AC
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+
+                <!-- Other Problem -->
+
+                <div id="otherProblemBox" style="display:none;">
+
+                    <label for="otherProblem">
+                        Specify Problem
+                    </label>
+
+                    <input
+                        type="text"
+                        id="otherProblem"
+                        placeholder="Enter your maintenance problem"
+                    >
+
+                </div>
+
+
+                <!-- Location -->
+
+                <label for="location">
+                    Location
+                </label>
+
+                <select id="location" required>
+
+                    <option value="">
+                        Select Floor
+                    </option>
+
+                    <option value="Ground Floor">
+                        Ground Floor
+                    </option>
+
+                    <option value="1st Floor">
+                        1st Floor
+                    </option>
+
+                    <option value="2nd Floor">
+                        2nd Floor
+                    </option>
+
+                    <option value="3rd Floor">
+                        3rd Floor
+                    </option>
+
+                    <option value="4th Floor">
+                        4th Floor
+                    </option>
+
+                    <option value="5th Floor">
+                        5th Floor
+                    </option>
+
+                </select>
+
+
+                <!-- Description -->
+
+                <label for="description">
+                    Problem Description
+                </label>
+
+                <textarea
+                    id="description"
+                    placeholder="Describe the maintenance problem..."
+                    required
+                ></textarea>
+
+
+                <!-- URGENT -->
+
+                <div class="urgent-box">
+
+                    <label
+                        for="urgent"
+                        class="urgent-check"
+                    >
+
+                        <input
+                            type="checkbox"
+                            id="urgent"
+                        >
+
+                        <span class="urgent-title">
+                            🚨 Mark this complaint as Urgent
+                        </span>
+
+                    </label>
+
+                    <div class="urgent-info">
+                        Select this only when the maintenance problem needs immediate attention.
+                    </div>
+
+
+                    <div id="urgentProblemBox">
+
+                        <label for="urgentProblem">
+                            🚨 Urgent Problem Details
+                        </label>
+
+                        <textarea
+                            id="urgentProblem"
+                            placeholder="Describe why this problem is urgent..."
+                            rows="4"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PHOTO -->
+
+                <label for="photo">
+                    Upload Photo
+                </label>
+
+                <input
+                    type="file"
+                    id="photo"
+                    accept="image/*"
+                >
+
+
+                <!-- Booking Date -->
+
+                <label for="bookingDate">
+                    Booking Date
+                </label>
+
+                <input
+                    type="date"
+                    id="bookingDate"
+                    required
+                >
+
+
+                <!-- Booking Time -->
+
+                <label for="bookingTime">
+                    Booking Time
+                </label>
+
+                <input
+                    type="time"
+                    id="bookingTime"
+                    required
+                >
+
+
+                <!-- Home Time -->
+
+                <label for="homeTime">
+                    When are you available at home?
+                </label>
+
+                <select id="homeTime" required>
+
+                    <option value="">
+                        Select Time Slot
+                    </option>
+
+                    <option value="09 AM - 12 PM">
+                        09 AM - 12 PM
+                    </option>
+
+                    <option value="12 PM - 03 PM">
+                        12 PM - 03 PM
+                    </option>
+
+                    <option value="03 PM - 06 PM">
+                        03 PM - 06 PM
+                    </option>
+
+                    <option value="06 PM - 09 PM">
+                        06 PM - 09 PM
+                    </option>
+
+                    <option value="Other">
+                        Other / Custom Time
+                    </option>
+
+                </select>
+
+
+                <!-- Custom Home Time -->
+
+                <div id="customHomeTimeBox" style="display:none;">
+
+                    <label for="customHomeTime">
+                        Enter Custom Time
+                    </label>
+
+                    <input
+                        type="text"
+                        id="customHomeTime"
+                        placeholder="Example: 10 AM - 11 AM"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    Submit Maintenance Request
+                </button>
+
+            </form>
+
+
+            <div
+                id="message"
+                class="message"
+            ></div>
+
+        </div>
+
+
+        <!-- TRACK COMPLAINT -->
+
+        <div class="card">
+
+            <h2>🔎 Track Your Complaint</h2>
+
+            <label for="trackTicketId">
+                Ticket ID
+            </label>
+
+            <input
+                type="text"
+                id="trackTicketId"
+                placeholder="Example: FIX-35175898"
+            >
+
+            <button
+                class="track-btn"
+                id="trackBtn"
+            >
+                Track Complaint
+            </button>
+
+            <div
+                id="trackMessage"
+                class="message"
+            ></div>
+
+        </div>
+
+
+        <!-- TRACKING RESULT -->
+
+        <div
+            class="card tracking-card"
+            id="trackingResult"
+        >
+
+            <h2>📋 Complaint Details</h2>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Ticket ID:
+                </span>
+
+                <span id="resultTicketId"></span>
+
+            </div>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Resident:
+                </span>
+
+                <span id="resultResident"></span>
+
+            </div>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Category:
+                </span>
+
+                <span id="resultCategory"></span>
+
+            </div>
+
+
+            <div
+                class="ticket-row"
+                id="resultOtherProblemRow"
+                style="display:none;"
+            >
+
+                <span class="ticket-label">
+                    Specific Problem:
+                </span>
+
+                <span id="resultOtherProblem"></span>
+
+            </div>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Location:
+                </span>
+
+                <span id="resultLocation"></span>
+
+            </div>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Description:
+                </span>
+
+                <span id="resultDescription"></span>
+
+            </div>
+
+
+            <!-- Priority -->
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Priority:
+                </span>
+
+                <span
+                    id="resultPriority"
+                    class="priority-normal"
+                >
+                    Normal
+                </span>
+
+            </div>
+
+
+            <!-- Urgent Problem -->
+
+            <div
+                class="ticket-row"
+                id="resultUrgentProblemRow"
+                style="display:none;"
+            >
+
+                <span class="ticket-label">
+                    Urgent Problem:
+                </span>
+
+                <span id="resultUrgentProblem"></span>
+
+            </div>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Booking Date:
+                </span>
+
+                <span id="resultBookingDate"></span>
+
+            </div>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Booking Time:
+                </span>
+
+                <span id="resultBookingTime"></span>
+
+            </div>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Resident Available:
+                </span>
+
+                <span id="resultHomeTime"></span>
+
+            </div>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Status:
+                </span>
+
+                <span
+                    id="resultStatus"
+                    class="status"
+                ></span>
+
+            </div>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Admin Remarks:
+                </span>
+
+                <span id="resultRemarks"></span>
+
+            </div>
+
+
+            <div class="ticket-row">
+
+                <span class="ticket-label">
+                    Photo:
+                </span>
+
+                <span id="resultPhoto"></span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // ==================================================
+        // API URL
+        // ==================================================
+
+        const API_URL =
+            "https://gsav1ujxyf.execute-api.ap-south-1.amazonaws.com";
+
+
+        // ==================================================
+        // DOM ELEMENTS
+        // ==================================================
+
+        const complaintForm =
+            document.getElementById("complaintForm");
+
+        const category =
+            document.getElementById("category");
+
+        const otherProblemBox =
+            document.getElementById("otherProblemBox");
+
+        const otherProblem =
+            document.getElementById("otherProblem");
+
+        const homeTime =
+            document.getElementById("homeTime");
+
+        const customHomeTimeBox =
+            document.getElementById("customHomeTimeBox");
+
+        const customHomeTime =
+            document.getElementById("customHomeTime");
+
+        const urgentInput =
+            document.getElementById("urgent");
+
+        const urgentProblemBox =
+            document.getElementById("urgentProblemBox");
+
+        const urgentProblem =
+            document.getElementById("urgentProblem");
+
+        const message =
+            document.getElementById("message");
+
+        const bookingDate =
+            document.getElementById("bookingDate");
+
+        const bookingTime =
+            document.getElementById("bookingTime");
+
+
+        // ==================================================
+        // DEFAULT DATE
+        // ==================================================
+
+        function getToday() {
+
+            const now = new Date();
+
+            const year =
+                now.getFullYear();
+
+            const month =
+                String(now.getMonth() + 1)
+                    .padStart(2, "0");
+
+            const day =
+                String(now.getDate())
+                    .padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        }
+
+
+        const today = getToday();
+
+        bookingDate.value = today;
+        bookingDate.min = today;
+
+
+        // ==================================================
+        // CURRENT DEVICE TIME
+        // ==================================================
+
+        function updateCurrentTime() {
+
+            const now = new Date();
+
+            const hours =
+                String(now.getHours())
+                    .padStart(2, "0");
+
+            const minutes =
+                String(now.getMinutes())
+                    .padStart(2, "0");
+
+            bookingTime.value =
+                `${hours}:${minutes}`;
+        }
+
+
+        updateCurrentTime();
+
+        setInterval(
+            updateCurrentTime,
+            60000
+        );
+
+
+        // ==================================================
+        // CATEGORY - OTHER
+        // ==================================================
+
+        category.addEventListener(
+            "change",
+            function () {
+
+                if (this.value === "Other") {
+
+                    otherProblemBox.style.display =
+                        "block";
+
+                    otherProblem.required =
+                        true;
+
+                } else {
+
+                    otherProblemBox.style.display =
+                        "none";
+
+                    otherProblem.required =
+                        false;
+
+                    otherProblem.value =
+                        "";
+                }
+
+            }
+        );
+
+
+        // ==================================================
+        // HOME TIME - CUSTOM
+        // ==================================================
+
+        homeTime.addEventListener(
+            "change",
+            function () {
+
+                if (this.value === "Other") {
+
+                    customHomeTimeBox.style.display =
+                        "block";
+
+                    customHomeTime.required =
+                        true;
+
+                } else {
+
+                    customHomeTimeBox.style.display =
+                        "none";
+
+                    customHomeTime.required =
+                        false;
+
+                    customHomeTime.value =
+                        "";
+                }
+
+            }
+        );
+
+
+        // ==================================================
+        // URGENT CHECKBOX
+        // ==================================================
+
+        urgentInput.addEventListener(
+            "change",
+            function () {
+
+                if (this.checked) {
+
+                    urgentProblemBox.style.display =
+                        "block";
+
+                    urgentProblem.required =
+                        true;
+
+                } else {
+
+                    urgentProblemBox.style.display =
+                        "none";
+
+                    urgentProblem.required =
+                        false;
+
+                    urgentProblem.value =
+                        "";
+                }
+
+            }
+        );
+
+
+        // ==================================================
+        // SHOW MESSAGE
+        // ==================================================
+
+        function showMessage(
+            element,
+            text,
+            type
+        ) {
+
+            element.textContent =
+                text;
+
+            element.className =
+                "message " + type;
+
+            element.style.display =
+                "block";
+        }
+
+
+        // ==================================================
+        // CREATE TICKET
+        // ==================================================
+
+        complaintForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+                message.style.display =
+                    "none";
+
+
+                const residentName =
+                    document
+                        .getElementById("residentName")
+                        .value
+                        .trim();
+
+                const location =
+                    document
+                        .getElementById("location")
+                        .value;
+
+                const description =
+                    document
+                        .getElementById("description")
+                        .value
+                        .trim();
+
+                const photo =
+                    document
+                        .getElementById("photo")
+                        .files[0];
+
+
+                // ==================================================
+                // VALIDATION
+                // ==================================================
+
+                if (!residentName) {
+
+                    showMessage(
+                        message,
+                        "Please enter your name.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!category.value) {
+
+                    showMessage(
+                        message,
+                        "Please select a maintenance category.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!location) {
+
+                    showMessage(
+                        message,
+                        "Please select your location.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!description) {
+
+                    showMessage(
+                        message,
+                        "Please describe the problem.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    category.value === "Other" &&
+                    !otherProblem.value.trim()
+                ) {
+
+                    showMessage(
+                        message,
+                        "Please specify the problem.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    urgentInput.checked &&
+                    !urgentProblem.value.trim()
+                ) {
+
+                    showMessage(
+                        message,
+                        "Please describe the urgent problem.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                // ==================================================
+                // HOME TIME
+                // ==================================================
+
+                let finalHomeTime =
+                    homeTime.value;
+
+                if (homeTime.value === "Other") {
+
+                    finalHomeTime =
+                        customHomeTime.value.trim();
+                }
+
+
+                if (!finalHomeTime) {
+
+                    showMessage(
+                        message,
+                        "Please select your available time.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                try {
+
+                    showMessage(
+                        message,
+                        "Submitting maintenance request...",
+                        "success"
+                    );
+
+
+                    // ==================================================
+                    // PHOTO UPLOAD
+                    // ==================================================
+
+                    let photoKey = "";
+
+
+                    if (photo) {
+
+                        showMessage(
+                            message,
+                            "Uploading photo...",
+                            "success"
+                        );
+
+
+                        const uploadResponse =
+                            await fetch(
+                                API_URL + "/upload-url",
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+                                            fileName:
+                                                photo.name,
+
+                                            contentType:
+                                                photo.type
+                                        })
+                                }
+                            );
+
+
+                        if (!uploadResponse.ok) {
+
+                            throw new Error(
+                                "Unable to generate photo upload URL."
+                            );
+                        }
+
+
+                        const uploadData =
+                            await uploadResponse.json();
+
+
+                        const uploadToS3 =
+                            await fetch(
+                                uploadData.uploadUrl,
+                                {
+                                    method: "PUT",
+
+                                    headers: {
+                                        "Content-Type":
+                                            photo.type
+                                    },
+
+                                    body: photo
+                                }
+                            );
+
+
+                        if (!uploadToS3.ok) {
+
+                            throw new Error(
+                                "Photo upload failed."
+                            );
+                        }
+
+
+                        photoKey =
+                            uploadData.fileKey ||
+                            uploadData.key ||
+                            uploadData.photoKey ||
+                            "";
+                    }
+
+
+                    // ==================================================
+                    // TICKET DATA
+                    // ==================================================
+
+                    const ticketData = {
+
+                        residentName:
+                            residentName,
+
+                        category:
+                            category.value,
+
+                        otherProblem:
+                            category.value === "Other"
+                                ? otherProblem.value.trim()
+                                : "",
+
+                        location:
+                            location,
+
+                        description:
+                            description,
+
+                        bookingDate:
+                            bookingDate.value,
+
+                        bookingTime:
+                            bookingTime.value,
+
+                        homeTime:
+                            finalHomeTime,
+
+                        photoKey:
+                            photoKey,
+
+                        urgent:
+                            urgentInput.checked,
+
+                        urgentProblem:
+                            urgentInput.checked
+                                ? urgentProblem.value.trim()
+                                : ""
+                    };
+
+
+                    // ==================================================
+                    // CREATE TICKET
+                    // ==================================================
+
+                    showMessage(
+                        message,
+                        "Creating maintenance ticket...",
+                        "success"
+                    );
+
+
+                    const response =
+                        await fetch(
+                            API_URL + "/tickets",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        ticketData
+                                    )
+                            }
+                        );
+
+
+                    const result =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            result.message ||
+                            "Ticket creation failed."
+                        );
+                    }
+
+
+                    // ==================================================
+                    // SUCCESS
+                    // ==================================================
+
+                    showMessage(
+                        message,
+                        "✅ Maintenance request submitted successfully! Ticket ID: " +
+                        result.ticketId,
+                        "success"
+                    );
+
+
+                    // ==================================================
+                    // AUTOMATICALLY FILL TICKET ID
+                    // AND TRACK COMPLAINT
+                    // ==================================================
+
+                    const trackTicketId =
+                        document.getElementById(
+                            "trackTicketId"
+                        );
+
+                    trackTicketId.value =
+                        result.ticketId;
+
+
+                    // Reset form
+                    complaintForm.reset();
+
+
+                    // Restore date/time after reset
+                    const newToday =
+                        getToday();
+
+                    bookingDate.value =
+                        newToday;
+
+                    bookingDate.min =
+                        newToday;
+
+                    updateCurrentTime();
+
+
+                    otherProblemBox.style.display =
+                        "none";
+
+                    customHomeTimeBox.style.display =
+                        "none";
+
+                    urgentProblemBox.style.display =
+                        "none";
+
+                    otherProblem.required =
+                        false;
+
+                    customHomeTime.required =
+                        false;
+
+                    urgentProblem.required =
+                        false;
+
+                    urgentInput.checked =
+                        false;
+
+                    urgentProblem.value =
+                        "";
+
+
+                    // ==================================================
+                    // AUTOMATICALLY TRACK COMPLAINT
+                    // ==================================================
+
+                    setTimeout(
+                        function () {
+
+                            document
+                                .getElementById("trackBtn")
+                                .click();
+
+                        },
+                        500
+                    );
+
+
+                    // Scroll to tracking section
+                    setTimeout(
+                        function () {
+
+                            trackTicketId.scrollIntoView({
+                                behavior: "smooth",
+                                block: "center"
+                            });
+
+                        },
+                        600
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "ERROR:",
+                        error
+                    );
+
+                    showMessage(
+                        message,
+                        "❌ " + error.message,
+                        "error"
+                    );
+                }
+
+            }
+        );
+
+
+        // ==================================================
+        // TRACK COMPLAINT
+        // ==================================================
+
+        document
+            .getElementById("trackBtn")
+            .addEventListener(
+                "click",
+                async function () {
+
+                    const ticketId =
+                        document
+                            .getElementById("trackTicketId")
+                            .value
+                            .trim();
+
+                    const trackMessage =
+                        document
+                            .getElementById("trackMessage");
+
+                    const trackingResult =
+                        document
+                            .getElementById("trackingResult");
+
+
+                    trackingResult.style.display =
+                        "none";
+
+
+                    if (!ticketId) {
+
+                        showMessage(
+                            trackMessage,
+                            "Please enter your Ticket ID.",
+                            "error"
+                        );
+
+                        return;
+                    }
+
+
+                    try {
+
+                        showMessage(
+                            trackMessage,
+                            "Loading complaint...",
+                            "success"
+                        );
+
+
+                        const response =
+                            await fetch(
+                                API_URL +
+                                "/tickets/" +
+                                encodeURIComponent(
+                                    ticketId
+                                )
+                            );
+
+
+                        const ticket =
+                            await response.json();
+
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                ticket.message ||
+                                "Ticket not found."
+                            );
+                        }
+
+
+                        // ==================================================
+                        // DISPLAY RESULT
+                        // ==================================================
+
+                        document
+                            .getElementById(
+                                "resultTicketId"
+                            )
+                            .textContent =
+                            ticket.ticketId || "-";
+
+
+                        document
+                            .getElementById(
+                                "resultResident"
+                            )
+                            .textContent =
+                            ticket.residentName || "-";
+
+
+                        document
+                            .getElementById(
+                                "resultCategory"
+                            )
+                            .textContent =
+                            ticket.category || "-";
+
+
+                        const otherProblemRow =
+                            document
+                                .getElementById(
+                                    "resultOtherProblemRow"
+                                );
+
+
+                        if (ticket.otherProblem) {
+
+                            otherProblemRow.style.display =
+                                "flex";
+
+                            document
+                                .getElementById(
+                                    "resultOtherProblem"
+                                )
+                                .textContent =
+                                ticket.otherProblem;
+
+                        } else {
+
+                            otherProblemRow.style.display =
+                                "none";
+                        }
+
+
+                        document
+                            .getElementById(
+                                "resultLocation"
+                            )
+                            .textContent =
+                            ticket.location || "-";
+
+
+                        document
+                            .getElementById(
+                                "resultDescription"
+                            )
+                            .textContent =
+                            ticket.description || "-";
+
+
+                        // ==================================================
+                        // PRIORITY
+                        // ==================================================
+
+                        const priorityElement =
+                            document
+                                .getElementById(
+                                    "resultPriority"
+                                );
+
+
+                        const isUrgent =
+                            ticket.urgent === true ||
+                            ticket.urgent === "true";
+
+
+                        if (isUrgent) {
+
+                            priorityElement.textContent =
+                                "🚨 URGENT";
+
+                            priorityElement.className =
+                                "priority-urgent";
+
+                        } else {
+
+                            priorityElement.textContent =
+                                "Normal";
+
+                            priorityElement.className =
+                                "priority-normal";
+                        }
+
+
+                        // ==================================================
+                        // URGENT PROBLEM
+                        // ==================================================
+
+                        const urgentProblemRow =
+                            document
+                                .getElementById(
+                                    "resultUrgentProblemRow"
+                                );
+
+
+                        if (
+                            isUrgent &&
+                            ticket.urgentProblem
+                        ) {
+
+                            urgentProblemRow.style.display =
+                                "flex";
+
+                            document
+                                .getElementById(
+                                    "resultUrgentProblem"
+                                )
+                                .textContent =
+                                ticket.urgentProblem;
+
+                        } else {
+
+                            urgentProblemRow.style.display =
+                                "none";
+                        }
+
+
+                        document
+                            .getElementById(
+                                "resultBookingDate"
+                            )
+                            .textContent =
+                            ticket.bookingDate || "-";
+
+
+                        document
+                            .getElementById(
+                                "resultBookingTime"
+                            )
+                            .textContent =
+                            ticket.bookingTime || "-";
+
+
+                        document
+                            .getElementById(
+                                "resultHomeTime"
+                            )
+                            .textContent =
+                            ticket.homeTime || "-";
+
+
+                        document
+                            .getElementById(
+                                "resultStatus"
+                            )
+                            .textContent =
+                            ticket.status || "Pending";
+
+
+                        document
+                            .getElementById(
+                                "resultRemarks"
+                            )
+                            .textContent =
+                            ticket.remarks ||
+                            "No remarks yet";
+
+
+                        // ==================================================
+                        // PHOTO
+                        // ==================================================
+
+                        const photoElement =
+                            document
+                                .getElementById(
+                                    "resultPhoto"
+                                );
+
+
+                        if (ticket.photoUrl) {
+
+                            photoElement.innerHTML =
+                                "";
+
+                            const link =
+                                document.createElement(
+                                    "a"
+                                );
+
+
+                            link.href =
+                                ticket.photoUrl;
+
+                            link.target =
+                                "_blank";
+
+                            link.rel =
+                                "noopener noreferrer";
+
+                            link.textContent =
+                                "📷 View Uploaded Photo";
+
+                            link.className =
+                                "photo-link";
+
+                            photoElement.appendChild(
+                                link
+                            );
+
+                        } else {
+
+                            photoElement.textContent =
+                                "No photo uploaded";
+                        }
+
+
+                        // Show complaint details
+                        trackingResult.style.display =
+                            "block";
+
+
+                        trackMessage.style.display =
+                            "none";
+
+
+                    } catch (error) {
+
+                        console.error(
+                            "TRACK ERROR:",
+                            error
+                        );
+
+                        showMessage(
+                            trackMessage,
+                            "❌ " + error.message,
+                            "error"
+                        );
+                    }
+
+                }
+            );
+
+    </script>
+
+</body>
+
+</html>
